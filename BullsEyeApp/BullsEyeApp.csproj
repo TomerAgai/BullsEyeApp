@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{96D2CC4C-2AD2-4A9B-B324-6AE11C6591F5}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>C23_Ex05_Adi_208000588_Tomer_211906326</RootNamespace>
-    <AssemblyName>C23 Ex05 Adi 208000588 Tomer 211906326</AssemblyName>
+    <RootNamespace>BullsEyeApp</RootNamespace>
+    <AssemblyName>BullsEyeApp</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -31,6 +31,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>BullsEyeApp.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

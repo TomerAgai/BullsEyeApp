@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34018.315
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BullsEyeApp", "C23 Ex05 Adi 208000588 Tomer 211906326\BullsEyeApp.csproj", "{96D2CC4C-2AD2-4A9B-B324-6AE11C6591F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BullsEyeApp", "BullsEyeApp\BullsEyeApp.csproj", "{96D2CC4C-2AD2-4A9B-B324-6AE11C6591F5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BullsEyeLogic", "BullsEyeLogic\BullsEyeLogic.csproj", "{AA19DFDC-C8E5-47D5-9762-010AEC3AF8B3}"
 EndProject

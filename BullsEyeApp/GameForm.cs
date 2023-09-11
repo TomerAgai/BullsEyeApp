@@ -64,6 +64,7 @@ namespace BullsEyeApp
             ColorsForm colorsForm = new ColorsForm();
             colorsForm.ColorSelected += onColorSelected;
             colorsForm.ShowDialog();
+
         }
 
         private void onColorSelected(Color i_SelectedColor)
