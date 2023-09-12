@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Ex02
+namespace BullsEyeLogic
 {
     public class Game
     {
@@ -8,6 +8,8 @@ namespace Ex02
         private readonly int r_MaxNumOfGuesses;
         private string m_ComputerWord;
         private readonly int r_WordLength;
+        private const char k_HalfBool = 'X';
+        private const char k_Bool = 'V';
 
         public Game(int i_MaxNumOfGuesses, int i_WordLength)
         {
@@ -17,29 +19,30 @@ namespace Ex02
             r_WordLength = i_WordLength;
             m_ComputerWord = "";
         }
+        
+        public char HalfBool
+        {
+            get { return k_HalfBool; }
+        }
+
+        public char Bool
+        {
+            get { return k_Bool; }
+        }
 
         public string ComputerWord
         {
-            get
-            {
-                return m_ComputerWord;
-            }
+            get { return m_ComputerWord; }
         }
 
         public int CurrentGuessNum
         {
-            get
-            {
-                return m_CurrNumOfGuesses;
-            }
+            get { return m_CurrNumOfGuesses; }
         }
 
         public Board Board
         {
-            get
-            {
-                return m_Board;
-            }
+            get { return m_Board; }
         }
 
         public void IncreaseNumGuessByOne()
@@ -72,11 +75,11 @@ namespace Ex02
             {
                 if (computerWord[i] == i_UserInput[i])
                 {
-                    matchToComputer = string.Format("V{0}", matchToComputer);
+                    matchToComputer = string.Format("{0}{1}", k_Bool,matchToComputer);
                 }
                 else if (computerWord.Contains(i_UserInput[i].ToString()))
                 {
-                    matchToComputer = string.Format("{0}X", matchToComputer);
+                    matchToComputer = string.Format("{0}{1}", matchToComputer, k_HalfBool);
                 }
             }
 
@@ -100,7 +103,7 @@ namespace Ex02
 
         public bool IsOutOfGuesses()
         {
-            return m_CurrNumOfGuesses >= r_MaxNumOfGuesses;
+            return m_CurrNumOfGuesses + 1 >= r_MaxNumOfGuesses;
         }
     }
 }

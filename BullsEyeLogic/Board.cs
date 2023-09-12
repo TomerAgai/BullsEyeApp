@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Ex02
+namespace BullsEyeLogic
 {
     public class Board
     {

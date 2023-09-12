@@ -1,63 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Drawing;
 
 namespace BullsEyeApp
 {
-    public class SettingsForm : Form
+    public partial class SettingsForm : Form
     {
-        private readonly Button r_ButtonChancesCounter;
-        private readonly Button r_ButtonStart;
-        private int m_chancesCounter = 4;
-        private const int k_FormWidth = 300;
-        private const int k_FormHeight = 200;
+        private int m_GuessesCounter = 4;
 
         public SettingsForm()
         {
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.Text = "BullsEye";
-            this.Size = new Size(k_FormWidth, k_FormHeight);
-            r_ButtonChancesCounter = new Button();
-            r_ButtonStart = new Button();
-            initControls();
+            InitializeComponent();
         }
 
-        private void initControls()
+        public int NumOfGuesses
         {
-            //r_ButtonChancesCounter.Enabled = true;
-            //r_ButtonStart.Enabled = true;
-            r_ButtonChancesCounter.Text = string.Format("Number of chances: {0}", m_chancesCounter);
-            r_ButtonStart.Text = "Start";
-            r_ButtonChancesCounter.AutoSize = true;
-            Controls.Add(r_ButtonChancesCounter);
-            Controls.Add(r_ButtonStart);
-            r_ButtonStart.Top = ClientSize.Height - 16 - r_ButtonStart.Height;
-            r_ButtonStart.Left = ClientSize.Width - 16 - r_ButtonStart.Width;
-            r_ButtonChancesCounter.Top = 16;
-            r_ButtonChancesCounter.Left = (ClientSize.Width - r_ButtonChancesCounter.Width) / 2;
-            //r_ButtonChancesCounter.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            r_ButtonChancesCounter.Click += buttonChancesCounter_Click;
-            r_ButtonStart.Click += buttonStart_Click;
-        }
-
-        public int NumberOfChances
-        {
-            get { return m_chancesCounter; }
+            get { return m_GuessesCounter; }
         }
 
         private void buttonChancesCounter_Click(object sender, EventArgs e)
         {
-            m_chancesCounter = m_chancesCounter < 10 ? m_chancesCounter + 1 : 4;
-            r_ButtonChancesCounter.Text = string.Format("Number of chances: {0}", m_chancesCounter);
+            m_GuessesCounter = m_GuessesCounter < 10 ? m_GuessesCounter + 1 : 4;
+            numberOfChancesButton.Text = string.Format("Number of guesses: {0}", m_GuessesCounter);
         }
 
-        private void buttonStart_Click(object sender, EventArgs e)
+        private void startButton_Click(object sender, EventArgs e)
         {
+            this.DialogResult = DialogResult.OK;
             this.Close();
         }
+
     }
 }
