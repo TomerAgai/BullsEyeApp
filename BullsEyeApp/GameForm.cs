@@ -132,17 +132,28 @@ namespace BullsEyeApp
             m_LastClickedButton = sender as Button;
             ColorsForm colorForm = new ColorsForm();
 
-            r_SelectedColorsInCurrentRow.Remove(m_LastClickedButton.BackColor);
+            printList(r_SelectedColorsInCurrentRow);
+            printList(r_SelectedColorsInCurrentRow);
             colorForm.ColorSelected += paintGuessButton;
             colorForm.ShowDialog();
+        }
+
+        private void printList(List<Color> l)
+        {
+            foreach (Color i in l)
+            {
+                Console.Write(i.ToString());
+            }
+            Console.WriteLine();
         }
 
         private void paintGuessButton(Color i_SelectedColor)
         {
             if (!r_SelectedColorsInCurrentRow.Contains(i_SelectedColor))
             {
-                m_LastClickedButton.BackColor = i_SelectedColor;
+                r_SelectedColorsInCurrentRow.Remove(m_LastClickedButton.BackColor);
                 r_SelectedColorsInCurrentRow.Add(i_SelectedColor);
+                m_LastClickedButton.BackColor = i_SelectedColor;
                 if (isAllColorsSelectedInCurrentRow())
                 {
                     r_ArrowButtons[r_Game.CurrentGuessNum].Enabled = true;
