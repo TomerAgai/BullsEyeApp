@@ -1,33 +1,24 @@
 ﻿using System;
+
 namespace BullsEyeLogic
 {
     public class Game
     {
-        private Board m_Board;
-        private int m_CurrNumOfGuesses;
+        private readonly Board r_Board;
+        private readonly Feedback r_Feedback;
         private readonly int r_MaxNumOfGuesses;
-        private string m_ComputerWord;
         private readonly int r_WordLength;
-        private const char k_HalfBool = 'X';
-        private const char k_Bool = 'V';
+        private int m_CurrNumOfGuesses;
+        private string m_ComputerWord;
 
         public Game(int i_MaxNumOfGuesses, int i_WordLength)
         {
-            m_Board = new Board(i_MaxNumOfGuesses, i_WordLength);
-            m_CurrNumOfGuesses = 0;
+            r_Board = new Board(i_MaxNumOfGuesses, i_WordLength);
+            r_Feedback = new Feedback();
             r_MaxNumOfGuesses = i_MaxNumOfGuesses;
             r_WordLength = i_WordLength;
+            m_CurrNumOfGuesses = 0;
             m_ComputerWord = "";
-        }
-        
-        public char HalfBool
-        {
-            get { return k_HalfBool; }
-        }
-
-        public char Bool
-        {
-            get { return k_Bool; }
         }
 
         public string ComputerWord
@@ -42,7 +33,12 @@ namespace BullsEyeLogic
 
         public Board Board
         {
-            get { return m_Board; }
+            get { return r_Board; }
+        }
+
+        public Feedback Feedback
+        {
+            get { return r_Feedback; }
         }
 
         public void IncreaseNumGuessByOne()
@@ -67,33 +63,18 @@ namespace BullsEyeLogic
             }
         }
 
-        public void InsertResultToBoard(string i_UserInput)
+        public void CalculateAndInsertGuessAndFeedbackToBoard(string i_UserInput)
         {
-            string matchToComputer = "", computerWord = m_ComputerWord;
-
-            for (int i = 0; i < i_UserInput.Length; i++)
-            {
-                if (computerWord[i] == i_UserInput[i])
-                {
-                    matchToComputer = string.Format("{0}{1}", k_Bool,matchToComputer);
-                }
-                else if (computerWord.Contains(i_UserInput[i].ToString()))
-                {
-                    matchToComputer = string.Format("{0}{1}", matchToComputer, k_HalfBool);
-                }
-            }
-
-            string spaces = new string(' ', i_UserInput.Length - matchToComputer.Length);
-            matchToComputer = string.Format("{0}{1}", matchToComputer, spaces);
-            m_Board.InsertToBoardMatrix(i_UserInput, m_CurrNumOfGuesses, 0);
-            m_Board.InsertToBoardMatrix(matchToComputer, m_CurrNumOfGuesses, 1);
+            r_Feedback.CalculateFeedback(i_UserInput, m_ComputerWord);
+            r_Board.InsertToBoardMatrix(i_UserInput, m_CurrNumOfGuesses, 0);
+            r_Board.InsertToBoardMatrix(r_Feedback.FeedbackForGuess, m_CurrNumOfGuesses, 1);
         }
 
         public bool IsWon()
         {
             bool isWon = false;
 
-            if (m_Board.BoardMatrix[m_CurrNumOfGuesses, 0].Equals(m_ComputerWord))
+            if (r_Board.BoardMatrix[m_CurrNumOfGuesses, 0].Equals(m_ComputerWord))
             {
                 isWon = true;
             }

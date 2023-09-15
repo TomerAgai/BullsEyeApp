@@ -1,23 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Text;
 using BullsEyeLogic;
 
 namespace BullsEyeApp
 {
     public partial class GameForm : Form
     {
-        private SettingsForm m_SettingForm;
         private readonly Button[,] r_GuessButtonsBoard;
         private readonly Button[] r_ArrowButtons;
-        private readonly Button[,] r_ResultButtonsBoard;
+        private readonly Button[,] r_FeedbackButtonsBoard;
         private readonly List<Color> r_SelectedColorsInCurrentRow;
         private readonly List<Button> r_ComputerChoiceButtonsList;
         private readonly Game r_Game;
@@ -25,17 +19,16 @@ namespace BullsEyeApp
         private Button m_LastClickedButton;
         private const int k_GuessLength = 4;
         private const int k_ButtonSize = 50;
-        private const int k_Margin = 10;
-        private const int k_StartHeight = 100;
+        private const int k_ButtonMargin = 10;
+        private const int k_ButtonStartHeight = 100;
+        private const bool k_EnableRowButtons = true;
 
-        public GameForm()
+        public GameForm(SettingsForm i_SettingsForm)
         {
-            m_SettingForm = new SettingsForm();
-            m_SettingForm.ShowDialog();
-            m_GuessesNumber = m_SettingForm.NumOfGuesses;
+            m_GuessesNumber = i_SettingsForm.NumOfGuesses;
             r_GuessButtonsBoard = new Button[m_GuessesNumber, k_GuessLength];
             r_ArrowButtons = new Button[m_GuessesNumber];
-            r_ResultButtonsBoard = new Button[m_GuessesNumber, k_GuessLength];
+            r_FeedbackButtonsBoard = new Button[m_GuessesNumber, k_GuessLength];
             r_Game = new Game(m_GuessesNumber, k_GuessLength);
             r_Game.CreateRandComputerWord();
             InitializeComponent();
@@ -46,7 +39,7 @@ namespace BullsEyeApp
                 button3,
                 button4
             };
-            InitializeDynamicControls();
+            initializeDynamicControls();
             r_SelectedColorsInCurrentRow = new List<Color>();
         }
 
@@ -72,8 +65,8 @@ namespace BullsEyeApp
             {
                 for (int col = 0; col < k_GuessLength; col++)
                 {
-                    xButtonLocation = k_Margin + col * (k_ButtonSize + k_Margin);
-                    yButtonLocation = k_StartHeight + row * (k_ButtonSize + k_Margin);
+                    xButtonLocation = k_ButtonMargin + col * (k_ButtonSize + k_ButtonMargin);
+                    yButtonLocation = k_ButtonStartHeight + row * (k_ButtonSize + k_ButtonMargin);
                     r_GuessButtonsBoard[row, col] = createButton(k_ButtonSize, k_ButtonSize, xButtonLocation, yButtonLocation, Color.LightGray);
                     r_GuessButtonsBoard[row, col].Click += guessButton_Click;
                     this.Controls.Add(r_GuessButtonsBoard[row, col]);
@@ -87,15 +80,15 @@ namespace BullsEyeApp
 
             for (int row = 0; row < m_GuessesNumber; row++)
             {
-                xButtonLocation = k_Margin + 4 * (k_ButtonSize + k_Margin);
-                yButtonLocation = k_StartHeight + row * (k_ButtonSize + k_Margin) + k_ButtonSize / 4;
+                xButtonLocation = k_ButtonMargin + 4 * (k_ButtonSize + k_ButtonMargin);
+                yButtonLocation = k_ButtonStartHeight + row * (k_ButtonSize + k_ButtonMargin) + k_ButtonSize / 4;
                 r_ArrowButtons[row] = createButton(k_ButtonSize, k_ButtonSize / 2, xButtonLocation, yButtonLocation, Color.LightGray, "→");
                 r_ArrowButtons[row].Click += arrowButton_Click;
                 this.Controls.Add(r_ArrowButtons[row]);
             }
         }
 
-        private void initializeResultButtonsBoard()
+        private void initializeFeedbackButtonsBoard()
         {
             int xButtonLocation, yButtonLocation;
 
@@ -106,45 +99,34 @@ namespace BullsEyeApp
                     for (int j = 0; j < 2; j++)
                     {
                         xButtonLocation = r_ArrowButtons[row].Location.X + k_ButtonSize + ((j + 1) * k_ButtonSize / 2);
-                        yButtonLocation = k_StartHeight + row * (k_ButtonSize + k_Margin) + (i * k_ButtonSize / 2);
-                        r_ResultButtonsBoard[row, i * 2 + j] = createButton(k_ButtonSize / 2, k_ButtonSize / 2, xButtonLocation, yButtonLocation, Color.LightGray);
-                        this.Controls.Add(r_ResultButtonsBoard[row, i * 2 + j]);
+                        yButtonLocation = k_ButtonStartHeight + row * (k_ButtonSize + k_ButtonMargin) + (i * k_ButtonSize / 2);
+                        r_FeedbackButtonsBoard[row, i * 2 + j] = createButton(k_ButtonSize / 2, k_ButtonSize / 2, xButtonLocation, yButtonLocation, Color.LightGray);
+                        this.Controls.Add(r_FeedbackButtonsBoard[row, i * 2 + j]);
                     }
                 }
             }
         }
 
-        private void InitializeDynamicControls()
+        private void initializeDynamicControls()
         {
             int rightmostPoint, bottommostPoint, additionalMargin = 10;
 
             initializeGuessButtonsBoard();
             initializeArrowButtons();
-            initializeResultButtonsBoard();
-            enableBoardRowGuessButtons();
-            rightmostPoint = r_ResultButtonsBoard[m_GuessesNumber - 1, k_GuessLength - 1].Right;
-            bottommostPoint = r_ResultButtonsBoard[m_GuessesNumber - 1, k_GuessLength - 1].Bottom;
+            initializeFeedbackButtonsBoard();
+            setBoardRowGuessButtonsState(k_EnableRowButtons);
+            rightmostPoint = r_FeedbackButtonsBoard[m_GuessesNumber - 1, k_GuessLength - 1].Right;
+            bottommostPoint = r_FeedbackButtonsBoard[m_GuessesNumber - 1, k_GuessLength - 1].Bottom;
             this.ClientSize = new Size(rightmostPoint + additionalMargin, bottommostPoint + additionalMargin);
         }
 
         private void guessButton_Click(object sender, EventArgs e)
         {
-            m_LastClickedButton = sender as Button;
             ColorsForm colorForm = new ColorsForm();
 
-            printList(r_SelectedColorsInCurrentRow);
-            printList(r_SelectedColorsInCurrentRow);
+            m_LastClickedButton = sender as Button;
             colorForm.ColorSelected += paintGuessButton;
             colorForm.ShowDialog();
-        }
-
-        private void printList(List<Color> l)
-        {
-            foreach (Color i in l)
-            {
-                Console.Write(i.ToString());
-            }
-            Console.WriteLine();
         }
 
         private void paintGuessButton(Color i_SelectedColor)
@@ -170,39 +152,38 @@ namespace BullsEyeApp
             return r_SelectedColorsInCurrentRow.Count == k_GuessLength;
         }
 
-        private void enableBoardRowGuessButtons()
+        private void setBoardRowGuessButtonsState(bool i_Enabled)
         {
-            for(int i = 0; i < k_GuessLength; i++)
-            {
-                r_GuessButtonsBoard[r_Game.CurrentGuessNum, i].Enabled = true;
-            }
-        }
+            int rowIndex = i_Enabled ? r_Game.CurrentGuessNum : r_Game.CurrentGuessNum - 1;
 
-        private void disableBoardRowGuessButtons()
-        {
             for (int i = 0; i < k_GuessLength; i++)
             {
-                r_GuessButtonsBoard[r_Game.CurrentGuessNum - 1, i].Enabled = false;
+                r_GuessButtonsBoard[rowIndex, i].Enabled = i_Enabled;
             }
-
         }
 
-        private void paintCurrentResultButtons()
+        private void paintCurrentFeedbackButtons()
         {
-            int resultIndicatorCounter = 0;
-            string logicMatirxLineResultString = r_Game.Board.BoardMatrix[r_Game.CurrentGuessNum, 1];
+            int feedbackIndicatorCounter = 0;
+            string logicMatrixLineFeedbackString = r_Game.Board.BoardMatrix[r_Game.CurrentGuessNum, 1];
+            Color feedbackButtonColor;
 
-            for (int i = 0; i < logicMatirxLineResultString.Length; i++)
+            foreach (char feedbackChar in logicMatrixLineFeedbackString)
             {
-                if (logicMatirxLineResultString[i] == r_Game.Bool)
+                feedbackButtonColor = Color.LightGray;
+                if (feedbackChar == r_Game.Feedback.BoolSign)
                 {
-                    r_ResultButtonsBoard[r_Game.CurrentGuessNum, resultIndicatorCounter].BackColor = Color.Black;
-                    resultIndicatorCounter++;
+                    feedbackButtonColor = Color.Black;
                 }
-                else if (logicMatirxLineResultString[i] == r_Game.HalfBool)
+                else if (feedbackChar == r_Game.Feedback.HalfBoolSign)
                 {
-                    r_ResultButtonsBoard[r_Game.CurrentGuessNum, resultIndicatorCounter].BackColor = Color.Yellow;
-                    resultIndicatorCounter++;
+                    feedbackButtonColor = Color.Yellow;
+                }
+
+                if (feedbackButtonColor != Color.LightGray)
+                {
+                    r_FeedbackButtonsBoard[r_Game.CurrentGuessNum, feedbackIndicatorCounter].BackColor = feedbackButtonColor;
+                    feedbackIndicatorCounter++;
                 }
             }
         }
@@ -213,7 +194,7 @@ namespace BullsEyeApp
 
             for (int i = 0; i < k_GuessLength; i++)
             {
-                userGuessedString.Append(ColorUtilities.converColorToEnum(r_GuessButtonsBoard[r_Game.CurrentGuessNum, i].BackColor));
+                userGuessedString.Append(ColorUtilities.ConvertColorToEnum(r_GuessButtonsBoard[r_Game.CurrentGuessNum, i].BackColor));
             }
 
             return userGuessedString.ToString();
@@ -224,8 +205,8 @@ namespace BullsEyeApp
             string userGuessedString = convertUserGuessedColorsToString();
             
             (sender as Button).Enabled = false;
-            r_Game.InsertResultToBoard(userGuessedString);
-            paintCurrentResultButtons();
+            r_Game.CalculateAndInsertGuessAndFeedbackToBoard(userGuessedString);
+            paintCurrentFeedbackButtons();
             if (r_Game.IsWon())
             {
                 finishGame("Congrats! You won");
@@ -237,8 +218,8 @@ namespace BullsEyeApp
             else
             {
                 r_Game.IncreaseNumGuessByOne();
-                enableBoardRowGuessButtons();
-                disableBoardRowGuessButtons();
+                setBoardRowGuessButtonsState(k_EnableRowButtons);
+                setBoardRowGuessButtonsState(!k_EnableRowButtons);
                 r_SelectedColorsInCurrentRow.Clear();
             }  
         }
@@ -249,7 +230,7 @@ namespace BullsEyeApp
 
             for (int i = 0; i < computerChoice.Length; i++)
             {
-                r_ComputerChoiceButtonsList[i].BackColor = ColorUtilities.convertEnumToColor(computerChoice[i]);
+                r_ComputerChoiceButtonsList[i].BackColor = ColorUtilities.ConvertEnumToColor(computerChoice[i]);
             }
         }
 
@@ -258,7 +239,7 @@ namespace BullsEyeApp
             showComputerChoice();
             MessageBox.Show(i_EndMessageToUser, "Game finished", MessageBoxButtons.OK, MessageBoxIcon.None);
             r_Game.IncreaseNumGuessByOne();
-            disableBoardRowGuessButtons();
+            setBoardRowGuessButtonsState(!k_EnableRowButtons);
         }
     }
 }

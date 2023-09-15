@@ -138,7 +138,6 @@
             this.Name = "ColorsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Pick A Color:";
-            this.Load += new System.EventHandler(this.ColorsForm_Load);
             this.ResumeLayout(false);
 
         }

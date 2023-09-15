@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BullsEyeApp
 {
     internal static class ColorUtilities
     {
-        internal static char converColorToEnum(Color color)
+        internal static char ConvertColorToEnum(Color color)
         {
             char enumColorChar;
 
@@ -46,29 +42,41 @@ namespace BullsEyeApp
             return enumColorChar;
         }
 
-        internal static Color convertEnumToColor(char colorEnum)
+        internal static Color ConvertEnumToColor(char colorEnum)
         {
+            Color eNumColor;
+
             switch (colorEnum)
             {
                 case (char)eColors.Pink:
-                    return Color.Pink;
+                    eNumColor =  Color.Pink;
+                    break;
                 case (char)eColors.Red:
-                    return Color.Red;
+                    eNumColor = Color.Red;
+                    break;
                 case (char)eColors.LightGreen:
-                    return Color.LightGreen;
+                    eNumColor = Color.LightGreen;
+                    break;
                 case (char)eColors.LightBlue:
-                    return Color.LightBlue;
+                    eNumColor = Color.LightBlue;
+                    break;
                 case (char)eColors.Blue:
-                    return Color.Blue;
+                    eNumColor = Color.Blue;
+                    break;
                 case (char)eColors.Yellow:
-                    return Color.Yellow;
+                    eNumColor = Color.Yellow;
+                    break;
                 case (char)eColors.Brown:
-                    return Color.Brown;
+                    eNumColor = Color.Brown;
+                    break;
                 case (char)eColors.White:
-                    return Color.White;
+                    eNumColor = Color.White;
+                    break;
                 default:
                     throw new Exception("Unknown color enum.");
             }
+
+            return eNumColor;
         }
 
         enum eColors
